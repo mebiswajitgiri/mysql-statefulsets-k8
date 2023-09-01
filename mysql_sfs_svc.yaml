@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-sfs-svc
+  labels:
+    app: mysql-sfs
+    type: headless-svc
+    env: practice
+  namespace: ns-bg
+spec:
+  selector:
+    app: mysql-sfs
+    type: pod
+    env: practice
+  ports:
+  - name: mysql
+    port: 3306
+  - name: mysqlx
+    port: 33060
+  - name: xcom
+    port: 33061
+  clusterIP: None

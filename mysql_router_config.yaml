@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-router-config
+  labels:
+    type: configmap
+    pltform: mysql-router
+    env: practice
+  namespace: ns-bg
+data:
+  mysql_user: "root"
+  mysql_host: "mysqlsfs-0.mysql-sfs-svc.ns-bg.svc.cluster.local"
+  mysql_port: "3306"
+  mysql_innodb-numbers: "3"

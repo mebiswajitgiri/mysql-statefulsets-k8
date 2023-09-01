@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-router-deployment
+  labels:
+    type: deployment
+    pltfrm: mysql-router
+    env: practice
+  namespace: ns-bg
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: pod
+      pltform: mysql-router
+      env: practice
+  template:
+    metadata:
+      name: mysql-router-pod
+      labels:
+        type: pod
+        pltform: mysql-router
+        env: practice
+    spec:
+      containers:
+        - name: mysql-router
+          image: mysql/mysql-router
+          ports:
+          - containerPort: 6446
+          env:
+          - name: MYSQL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-router-config
+                key: mysql_user
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-router-config
+                key: mysql_host
+          - name: MYSQL_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-router-config
+                key: mysql_port
+          - name: MYSQL_INNODB_NUM_MEMBERS
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-router-config
+                key: mysql_innodb-numbers
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-router-secret
+                key: password
+          
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: router-mysql-svc
+  labels:
+    type: clusterip
+    pltform: mysql-router
+    env: practice
+  namespace: ns-bg
+spec:
+  ports:
+  - port: 6446
+    protocol: TCP
+    targetPort: 6446
+  selector:
+    type: pod
+    pltform: mysql-router
+    env: practice
+  type: ClusterIP
